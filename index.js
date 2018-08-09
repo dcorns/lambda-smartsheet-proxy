@@ -7,7 +7,19 @@
 
 const executeProxy = require('./execute-proxy');
 exports.handler = async (event) => {
-  const result = await executeProxy();
-  console.log('result');
-  return result;
+  console.log(event);
+  try{
+    const result = await executeProxy(event);
+    console.log('result');
+    return {
+      body:result,
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*"
+      }
+    };
+  }
+  catch(e){
+    return {status:400};
+  }
 };
