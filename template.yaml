@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion : '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: smart sheet proxy server.
+
+Resources:
+
+  Products:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: products.handler
+      Runtime: nodejs8.10
+      Events:
+        ListProducts:
+          Type: Api
+          Properties:
+            Path: /products
+            Method: get
+        CreateProduct:
+          Type: Api
+          Properties:
+            Path: /products
+            Method: post
+        Product:
+          Type: Api
+          Properties:
+            Path: /products/{product}
+            Method: any
+  Math:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: another-function.handler
+      Runtime: nodejs8.10
+      Events:
+        Sum:
+          Type: Api
+          Properties:
+            Path: /math/{svc}/{n1}/{n2}
+            Method: any
+  Echo:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: json-data.handler
+      Runtime: nodejs6.10
+      Events:
+        Data:
+          Type: Api
+          Properties:
+            Path: /json
+            Method: any
