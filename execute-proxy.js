@@ -6,28 +6,29 @@
  */
 const https = require('https');
 const config = require('./config');
-const executeProxy = (req={data:{}}) => {
+const executeProxy = (event) => {
   const options = {
     hostname: 'api.smartsheet.com',
-    path: '/2.0/users/me',
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + config.smartSheetToken,
-    },
+    path: event.path,
+    method: event.httpMethod,
+    headers: event.headers,
   };
+  let response = '';
   return new Promise((resolve, reject) => {
     const req = https.request(options, res => {
-      console.log(`STATUS: ${res.statusCode}`);
-      console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
       res.on('data', chunk => {
+        response += chunk;
         console.log(`Response: ${chunk}`);
+      });
+      res.on('end', function () {
+        resolve(response);
       });
     });
     req.on('error', err => {
       reject(err);
     });
-    req.end(req.data, wres => {
-      resolve(wres);
+    req.end(() => {
+      console.log('request end');
     });
   });
 };
